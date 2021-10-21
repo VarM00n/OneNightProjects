@@ -1,4 +1,4 @@
-from os import walk, listdir, rename, getcwd
+from os import walk, listdir, rename, getcwd, mkdir
 from os import listdir
 from os import rename
 from os.path import isfile, isdir, join, abspath
@@ -10,6 +10,7 @@ import shutil
 
 # For default download folder
 SOURCE_FOLDER = str(join(Path.home(), "Downloads"))
+MAIN_FOLDER_NAMES = ['DOCS', 'PDF', 'EXECUTABLE', 'IMAGES', 'ZIP', 'CSV', 'TXT', 'MP3', 'FOLDERS', 'OTHERS']
 
 def getCount():
     fileCount, folderCount = (0, 0)
@@ -20,6 +21,13 @@ def getCount():
             fileCount += 1
 
     return fileCount, folderCount
+
+def createfoldersIfNeeded():
+    mainFolderList = [[f for f in listdir(abspath(getcwd())) if isdir(join(abspath(getcwd()), f))]]
+    for  folderName in MAIN_FOLDER_NAMES:
+        if not folderName in mainFolderList[0]:
+            mkdir(folderName)
+
 
 def sortItems():
     fileList = [f for f in listdir(SOURCE_FOLDER) if isfile(join(SOURCE_FOLDER, f))]
@@ -71,6 +79,7 @@ print("Found " + str(folderCount) + " folders.")
 print()
 
 try:
+    createfoldersIfNeeded()
     sortItems()
 except Exception as e:
     print("Moving files ended with error: " + str(e))
